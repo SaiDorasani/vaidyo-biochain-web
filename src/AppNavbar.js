@@ -17,7 +17,12 @@ export default class AppNavbar extends Component {
 
     render() {
         return <Navbar color="dark" dark expand="md">
-            <NavbarBrand tag={Link} to="/">Home</NavbarBrand>
+            <NavbarBrand tag={Link} to="/">Home<img
+            // src="vaidyo.png"
+            // alt="Vaidyo Home"
+            // width="40"
+            // height="40"
+          /></NavbarBrand>
         </Navbar>;
     }
 }

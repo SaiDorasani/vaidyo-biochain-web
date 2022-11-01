@@ -6,14 +6,20 @@ import AppNavbar from './AppNavbar';
 class ClientEdit extends Component {
 
     emptyItem = {
-        name: '',
-        email: ''
+        userId: '',
+        data: ''
     };
+
+    emtpyBlock = {
+        userId: '',
+        data: ''
+    }
 
     constructor(props) {
         super(props);
         this.state = {
-            item: this.emptyItem
+            item: this.emptyItem,
+            block: this.emtpyBlock
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -21,8 +27,8 @@ class ClientEdit extends Component {
 
     async componentDidMount() {
         if (this.props.match.params.id !== 'new') {
-            const client = await (await fetch(`/clients/${this.props.match.params.id}`)).json();
-            this.setState({item: client});
+            const client = await (await fetch(`/biochain/patients/${this.props.match.params.id}`)).json();
+            this.setState({item: client[0], block: this.emtpyBlock});
         }
     }
 
@@ -35,39 +41,77 @@ class ClientEdit extends Component {
         this.setState({item});
     }
 
+    // async handleSubmit(event) {
+    //     event.preventDefault();
+    //     const {item} = this.state;
+    
+    //     await fetch('/clients' + (item.id ? '/' + item.id : ''), {
+    //         method: (item.id) ? 'PUT' : 'POST',
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify(item),
+    //     });
+    //     this.props.history.push('/clients');
+    // }
 async handleSubmit(event) {
     event.preventDefault();
     const {item} = this.state;
+    const {block} = this.state;
 
-    await fetch('/clients' + (item.id ? '/' + item.id : ''), {
-        method: (item.id) ? 'PUT' : 'POST',
+    await fetch('biochain/bioblocks/create', {
+        method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(item),
+        body: JSON.stringify(block),
     });
-    this.props.history.push('/clients');
+    this.props.history.push('/patients');
 }
 
     render() {
         const {item} = this.state;
-        const title = <h2>{item.id ? 'Edit Client' : 'Add Client'}</h2>;
+        const title = <h2>{item.id ? 'Edit Client' : 'Add Data to Vaidyo Biochain'}</h2>;
+        const patientInformation = <h2>Patient Information</h2>
 
         return <div>
             <AppNavbar/>
+            {patientInformation}
             <Container>
+                <FormGroup>
+                        <Label for="name"><b>First Name:</b></Label>
+                        <Label for="name"> {item.firstName}</Label>
+                </FormGroup>
+                <FormGroup>
+                        <Label for="name"><b>Last Name:</b></Label>
+                        <Label for="name"> {item.lastName}</Label>
+                </FormGroup>
+                <FormGroup>
+                        <Label for="name"><b>Date of Birth:</b></Label>
+                        <Label for="name"> {item.dateOfBirth}</Label>
+                </FormGroup>
+                <FormGroup>
+                        <Label for="name"><b>Username:</b></Label>
+                        <Label for="name"> {item.username}</Label>
+                </FormGroup>
+                <FormGroup>
+                        <Label for="name"><b>User ID:</b></Label>
+                        <Label for="name"> {item.userId}</Label>
+
+                </FormGroup>
                 {title}
                 <Form onSubmit={this.handleSubmit}>
                     <FormGroup>
-                        <Label for="name">Name</Label>
-                        <Input type="text" name="name" id="name" value={item.name || ''}
+                        <Label for="name">Enter Biochain User ID</Label>
+                        <Input type="text" name="userId" id="userId " value={item.userId || ''}
                                onChange={this.handleChange} autoComplete="name"/>
-                    </FormGroup>
+                    </FormGroup>    
                     <FormGroup>
-                        <Label for="email">Email</Label>
-                        <Input type="text" name="email" id="email" value={item.email || ''}
-                               onChange={this.handleChange} autoComplete="email"/>
+                        <Label for="email">Value</Label>
+                        <Input type="text" name="data" id="data" value={item.data ||''}
+                               onChange={this.handleChange} autoComplete="data"/>
                     </FormGroup>
                     <FormGroup>
                         <Button color="primary" type="submit">Save</Button>{' '}

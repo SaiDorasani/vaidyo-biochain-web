@@ -34,12 +34,12 @@ class ClientList extends Component {
         const {clients} = this.state;
 
         const clientList = clients.map(client => {
-            return <tr key={client.id}>
+            return <tr key={client.userId}>
                 <td style={{whiteSpace: 'nowrap'}}>{client.userId}</td>
                 <td>{client.username}</td>
                 <td>
                     <ButtonGroup>
-                        {<Button size="sm" color="primary" tag={Link} to={"/patients/" + client.id}>Edit</Button>}
+                        {<Button size="sm" color="primary" tag={Link} to={"/patients/" + client.username}>Edit</Button>}
                         {<Button size="sm" color="danger" onClick={() => this.remove(client.id)}>Delete</Button>}
                     </ButtonGroup>
                 </td>
