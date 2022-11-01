@@ -5,6 +5,12 @@ import AppNavbar from './AppNavbar';
 
 class ClientEdit extends Component {
 
+    payload = {
+        userId: '',
+        value: '',
+        key: ''
+    }
+
     emptyItem = {
         userId: '',
         data: ''
@@ -59,21 +65,28 @@ async handleSubmit(event) {
     event.preventDefault();
     const {item} = this.state;
     const {block} = this.state;
+  
+    this.payload.userId = item.userId;
+    this.payload.value = item.value;
+    this.payload.key = item.key;
 
-    await fetch('biochain/bioblocks/create', {
+    await fetch('biochain/bioblocks/create/' + item.username, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(block),
-    });
-    this.props.history.push('/patients');
+        
+        body: JSON.stringify(this.payload),
+
+    
+    }).then(response => response.json).then(alert("Block added successfully!"), item.key = '', item.value = '', this.setState({item: item}));
+    // this.props.history.push('/patients');
 }
 
     render() {
         const {item} = this.state;
-        const title = <h2>{item.id ? 'Edit Client' : 'Add Data to Vaidyo Biochain'}</h2>;
+        const title = <h2>{item.id ? 'Edit Client' : 'Add Data to Biochain'}</h2>;
         const patientInformation = <h2>Patient Information</h2>
 
         return <div>
@@ -104,14 +117,14 @@ async handleSubmit(event) {
                 {title}
                 <Form onSubmit={this.handleSubmit}>
                     <FormGroup>
-                        <Label for="name">Enter Biochain User ID</Label>
-                        <Input type="text" name="userId" id="userId " value={item.userId || ''}
+                        <Label for="name">Enter Key</Label>
+                        <Input type="text" name="key" id="key " value={item.key|| ''}
                                onChange={this.handleChange} autoComplete="name"/>
                     </FormGroup>    
                     <FormGroup>
-                        <Label for="email">Value</Label>
-                        <Input type="text" name="data" id="data" value={item.data ||''}
-                               onChange={this.handleChange} autoComplete="data"/>
+                        <Label for="email">Enter Value</Label>
+                        <Input type="text" name="value" id="value" value={item.value || ''}
+                               onChange={this.handleChange} autoComplete="value"/>
                     </FormGroup>
                     <FormGroup>
                         <Button color="primary" type="submit">Save</Button>{' '}
